@@ -24,14 +24,24 @@ def main():
                                                                   'avoid rate-limiting. If you\'re rate-limited, '
                                                                   'set this to 60 (unit is seconds).')
     parser.add_argument('--output_dir', type=str, required=True, help='Output directory for the resulting pickle file.')
+    parser.add_argument('--starting_term', type=str, help='The term to start from in the renormalisation (which will '
+                                                          'be the term that has the maximum value of 100 in the end). '
+                                                          'If not provided, the starting term will be random.')
+    parser.add_argument('--terms', type=str, help='If you want to start from a specific term, this JSON needs to be '
+                                                  'provided in order to map the term to its term id in Google Trends.')
+
     args = parser.parse_args()
 
     if args.mode == 'continue' and (args.state is None or
-                                    args.time_settings is not None):
+                                    args.time_settings is not None or args.starting_term is not None or
+                                    args.terms is not None):
         parser.error('In "continue" mode, you should provide a pickle file containing the saved state.')
     if args.mode == 'start' and (args.state is not None or
                                  args.time_settings is None):
         parser.error('In "start" mode, you should provide a time settings json.')
+    if args.starting_term is not None and args.terms is None:
+        parser.error('When you provide the starting term, you need to provide the dictionary mapping them to their '
+                     'term ids.')
 
     if args.proxy is not None:
         proxy = {'https': args.proxy}
@@ -43,9 +53,15 @@ def main():
 
     if args.mode == 'start':
         settings_dict = json.load(open(args.time_settings, 'r', encoding='utf8'))
+        starting_term = None
+        if args.starting_term is not None:
+            starting_term = args.starting_term
+            term_to_mid = json.load(open(args.terms, 'r'))
+            starting_term = term_to_mid[starting_term]
+
         conversion_ratio_list = find_all_interterm_conversion_rates_start(pytrends_obj,
                                                             terms_list, settings_dict['time_start'],
-                                                            settings_dict['time_end'])
+                                                            settings_dict['time_end'], starting_term=starting_term)
     else:
         saved_state = pickle.load(open(args.state, 'rb'))
         conversion_ratio_list = find_all_interterm_conversion_rates_continue(pytrends_obj, saved_state[0],

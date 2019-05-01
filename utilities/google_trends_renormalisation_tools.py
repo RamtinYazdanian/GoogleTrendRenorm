@@ -145,14 +145,18 @@ def calculate_intertag_conversion_ratio(pytrends_obj, term_1, term_2, time_start
     return (term_1, term_2, conversion_ratio)
 
 def find_all_interterm_conversion_rates_start(pytrends_obj, terms_list, time_start, time_end,
-                                              max_ratio=PYTRENDS_MAX_RATIO, seed=1):
+                                              max_ratio=PYTRENDS_MAX_RATIO, seed=1, starting_term=None):
 
     time_start = datetime.strptime(time_start, DT_FORMAT)
     time_end = datetime.strptime(time_end, DT_FORMAT)
 
-    # Randomising the starting ref term. This part could be changed to decrease the risk of getting stuck.
-    random_seed(seed)
-    ref_term = terms_list[randint(0, len(terms_list)-1)]
+    # Randomising the starting ref term or using the one provided by the user.
+    # This part could be changed to decrease the risk of getting stuck.
+    if starting_term is None:
+        random_seed(seed)
+        ref_term = terms_list[randint(0, len(terms_list)-1)]
+    else:
+        ref_term = starting_term
 
     # Removing the starting ref term from "rest".
     rest = set(terms_list)
