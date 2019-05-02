@@ -35,6 +35,12 @@ def prompt_term_choice(pytrends_obj, term_name, default_choice=False):
     else:
         return prompt_list[choice][1]
 
+def clean_trend_value(t):
+    if t == '<1':
+        t = 1
+    return int(t)
+
+
 def get_interest_over_time(pytrends_obj, terms, start, end, verbose=True):
     # Sleep if necessary, as determined by our SleepingTrendReq object's sleep_time and the time of its last request.
     if pytrends_obj.sleep_time > 0 and\
@@ -51,6 +57,9 @@ def get_interest_over_time(pytrends_obj, terms, start, end, verbose=True):
     # Update the last request time
     pytrends_obj.update_last_req_time()
     df = df.drop(columns='isPartial')
+    # Cleaning potential "<1" values.
+    for term in terms:
+        df[term] = df[term].apply(clean_trend_value)
     return df
 
 def create_pytrends_obj(proxies=None, sleep_time=0):
