@@ -19,6 +19,5 @@ Run the scripts in this order:
 The most important parameter in utilities/constants.py is PYTRENDS_MAX_RATIO. This value and its inverse are respectively the upper and lower bounds for the renormalise_trend_dataframes script, when it attempts to build a DAG where the conversion ratios are not outside these upper and lower bounds in order to reduce rounding errors caused by the fact that Google Trends values are always integers.
 
 # What will be added
-* Support for cases where the value is less than 1 (returned by Google Trends as "<1").
 * Support finer-grained data -- right now everything is written with week-level data in mind.
-* Support renormalisation based on a specific term at a specific time (aiming for a globally unique renormalisation).
+* Support renormalisation based on a specific term at a specific time (aiming for a globally unique renormalisation). Currently, renormalisation based on a specific term is possible, but the time will be determined by the maximum value of that term.
