@@ -16,7 +16,7 @@ Run the scripts in this order:
 4. fix_dataframe_names.py: The column names in the dataframes are changed to the original terms. Optional step.
 
 ## Parameters
-The most important parameter in utilities/constants.py is PYTRENDS_MAX_RATIO. This value and its inverse are respectively the upper and lower bounds for the renormalise_trend_dataframes script, when it attempts to build a partial ordering where the conversion ratios are not outside these upper and lower bounds in order to reduce rounding errors caused by the fact that Google Trends values are always integers.
+The most important parameter in utilities/constants.py is PYTRENDS_MAX_RATIO. This value and its inverse are respectively the upper and lower bounds for the renormalise_trend_dataframes script, when it attempts to build a partial ordering where the conversion ratios are not outside these upper and lower bounds. This is in order to reduce rounding errors caused by the fact that Google Trends values are always integers.
 
 # What will be added
 * Support finer-grained data -- right now everything is written with week-level data in mind.
