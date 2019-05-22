@@ -37,6 +37,8 @@ def main():
         terms_dict = dict()
         for term in terms:
             chosen_term = prompt_term_choice(pytrends_obj, term, default_choice=args.choose_first)
+            if chosen_term is None:
+                break
             if chosen_term != '':
                 terms_dict[term] = chosen_term
 

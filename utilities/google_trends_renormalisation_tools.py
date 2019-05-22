@@ -27,11 +27,14 @@ def prompt_term_choice(pytrends_obj, term_name, default_choice=False):
     if default_choice:
         return suggestion_list[0]['mid']
     prompt_list = [(x['title']+' ---- Type: '+x['type'], x['mid']) for x in suggestion_list]
-    prompt_text = 'Term: '+ term_name +'\nChoose one of the following by entering its index (0 to skip this term):\n'+ \
+    prompt_text = 'Term: '+ term_name +'\nChoose one of the following by entering its index (0 to skip this term' \
+                                       ', -1 to terminate the process):\n'+ \
                     '\n'.join([str(i+1)+'.'+prompt_list[i][0] for i in range(len(prompt_list))])+'\n'
     choice = int(input(prompt_text)) - 1
     if choice == -1:
         return ''
+    elif choice == -2:
+        return None
     else:
         return prompt_list[choice][1]
 
