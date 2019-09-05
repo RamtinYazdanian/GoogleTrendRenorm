@@ -20,8 +20,9 @@ def remove_duplicates_and_preserve_order(seq):
 
 def prompt_term_choice(pytrends_obj, term_name, default_choice=False):
     suggestion_list = perform_term_lookup(pytrends_obj, term_name)
-    suggestion_list.extend(perform_term_lookup(pytrends_obj, term_name[:-1]))
-    suggestion_list.extend(perform_term_lookup(pytrends_obj, term_name.split('.')[0]))
+    if term_name[0]!='"' or term_name[-1]!='"':
+        suggestion_list.extend(perform_term_lookup(pytrends_obj, term_name[:-1]))
+        suggestion_list.extend(perform_term_lookup(pytrends_obj, term_name.split('.')[0]))
     suggestion_list = remove_duplicates_and_preserve_order(suggestion_list)
 
     if default_choice:
