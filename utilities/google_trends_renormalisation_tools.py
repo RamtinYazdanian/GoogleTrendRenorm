@@ -11,6 +11,9 @@ from utilities.constants import PYTRENDS_GEO, PYTRENDS_MAX_RATIO, \
 from random import randint, seed as random_seed
 
 def perform_term_lookup(pytrends_obj, term_name):
+    print(term_name)
+    if len(term_name) < 2:
+        term_name = term_name + ' ('
     return pytrends_obj.suggestions(term_name)
 
 def remove_duplicates_and_preserve_order(seq):
@@ -29,8 +32,9 @@ def prompt_term_choice(pytrends_obj, term_name, default_choice=False):
     prompt_list = [(x['title']+' ---- Type: '+x['type'], x['mid']) for x in suggestion_list]
     prompt_text = 'Term: '+ term_name +'\nChoose one of the following by entering its index (0 to skip this term' \
                                        ', -1 to terminate the process):\n'+ \
-                    '\n'.join([str(i+1)+'.'+prompt_list[i][0] for i in range(len(prompt_list))])+'\n'
-    choice = int(input(prompt_text)) - 1
+                    '\n'.join([str(i+1)+'.'+str(prompt_list[i][0].encode('utf8')).strip('b').strip("'") for i in range(len(prompt_list))])+'\n'
+    print(prompt_text)
+    choice=int(input())-1
     if choice == -1:
         return ''
     elif choice == -2:
