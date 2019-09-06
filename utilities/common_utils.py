@@ -13,4 +13,4 @@ def invert_dict(d):
     return {d[k]: k for k in d}
 
 def remove_nones(l):
-    return [x for x in l if l is not None]
+    return [x for x in l if x is not None]
