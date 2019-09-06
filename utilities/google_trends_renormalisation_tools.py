@@ -9,6 +9,7 @@ from bisect import bisect
 from utilities.constants import PYTRENDS_GEO, PYTRENDS_MAX_RATIO, \
                             INDIVIDUAL_CONTINUE_FILENAME, INTERTERM_CONTINUE_FILENAME, DT_FORMAT
 from random import randint, seed as random_seed
+from utilities.common_utils import remove_nones
 
 def perform_term_lookup(pytrends_obj, term_name):
     print(term_name)
@@ -68,7 +69,11 @@ def get_interest_over_time(pytrends_obj, terms, start, end, verbose=True):
         df = df.drop(columns='isPartial')
     # Cleaning potential "<1" values.
     for term in terms:
-        df[term] = df[term].apply(clean_trend_value)
+        if term in df.columns.values:
+            df[term] = df[term].apply(clean_trend_value)
+        else:
+            print('Term ' + term + ' not found in the retrieved dataframe!')
+            return None
     return df
 
 def create_pytrends_obj(proxies=None, sleep_time=0):
@@ -130,7 +135,7 @@ def retrieve_overlapping_term_time_series(pytrends_obj, term, time_start, time_e
     retrieved_dataframes = list()
     for time_period in time_period_list:
         retrieved_dataframes.append(get_interest_over_time(pytrends_obj, [term], time_period[0], time_period[1]))
-
+    retrieved_dataframes = remove_nones(retrieved_dataframes)
     return retrieved_dataframes
 
 def retrieve_time_series_with_overall_series_normalisation(pytrends_obj, term, time_start, time_end):
@@ -150,6 +155,8 @@ def retrieve_time_series_with_overall_series_normalisation(pytrends_obj, term, t
 
     for time_period in time_period_list:
         retrieved_dataframes.append(get_interest_over_time(pytrends_obj, [term], time_period[0], time_period[1]))
+
+    retrieved_dataframes = remove_nones(retrieved_dataframes)
 
     if len(retrieved_dataframes) == 1:
         return retrieved_dataframes[0], retrieved_dataframes[0]
