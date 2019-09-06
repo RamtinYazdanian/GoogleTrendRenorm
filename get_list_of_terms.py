@@ -24,7 +24,7 @@ def main():
     if args.use_original_terms and args.choose_first:
         parser.error('--use_original_terms and --choose_first are mutually exclusive')
 
-    terms = open(args.term_list, 'r').readlines()
+    terms = open(args.term_list, 'r', encoding='utf8').readlines()
     terms = [x.strip() for x in terms if len(x.strip()) > 0]
     if args.use_original_terms:
         terms_dict = {x: x for x in terms}
