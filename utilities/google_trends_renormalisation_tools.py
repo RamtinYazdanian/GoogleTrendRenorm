@@ -158,6 +158,8 @@ def retrieve_time_series_with_overall_series_normalisation(pytrends_obj, term, t
 
     retrieved_dataframes = remove_nones(retrieved_dataframes)
 
+    print(retrieved_dataframes)
+
     if len(retrieved_dataframes) == 0:
         return None, None
 
