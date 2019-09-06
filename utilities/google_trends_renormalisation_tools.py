@@ -64,7 +64,8 @@ def get_interest_over_time(pytrends_obj, terms, start, end, verbose=True):
                                 date.strftime(end, '%Y-%m-%d') + '; geo: '+PYTRENDS_GEO)
     # Update the last request time
     pytrends_obj.update_last_req_time()
-    df = df.drop(columns='isPartial')
+    if 'isPartial' in df.columns.values:
+        df = df.drop(columns='isPartial')
     # Cleaning potential "<1" values.
     for term in terms:
         df[term] = df[term].apply(clean_trend_value)
