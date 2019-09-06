@@ -293,7 +293,7 @@ def retrieve_all_terms_continue(pytrends_obj, target_terms_list, time_start, tim
             print('An error occured! Details follow:')
             print(traceback.print_exc())
             print(e)
-            with open(INDIVIDUAL_CONTINUE_FILENAME, 'rb') as f:
+            with open(INDIVIDUAL_CONTINUE_FILENAME, 'wb') as f:
                 pickle.dump((target_terms_list, time_start, time_end, dataframe_dict, index), f)
             return None
     return dataframe_dict
