@@ -150,7 +150,7 @@ def retrieve_time_series_with_overall_series_normalisation(pytrends_obj, term, t
     :param time_end: The end point of the period
     :return: A tuple consisting of the renormalised concatenated week-level dataframe and the background dataframe
     """
-    time_period_list = create_time_periods(time_start, time_end, leap_size=5, overlap_size=0)
+    time_period_list = create_time_periods(time_start, time_end, leap_size=1, overlap_size=0)
     retrieved_dataframes = list()
 
     for time_period in time_period_list:
