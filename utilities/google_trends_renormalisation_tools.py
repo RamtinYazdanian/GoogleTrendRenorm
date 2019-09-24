@@ -138,7 +138,7 @@ def retrieve_overlapping_term_time_series(pytrends_obj, term, time_start, time_e
     retrieved_dataframes = remove_nones(retrieved_dataframes)
     return retrieved_dataframes
 
-def retrieve_time_series_with_overall_series_normalisation(pytrends_obj, term, time_start, time_end):
+def retrieve_time_series_with_overall_series_normalisation(pytrends_obj, term, time_start, time_end, leap_size=5):
     """
     Takes a term and a period, retrieves the whole period in 5-year windows (or shorter for the last window)
     such that the resolution is one data point per week, and then to renormalise all on the same scale, retrieves a
@@ -150,7 +150,7 @@ def retrieve_time_series_with_overall_series_normalisation(pytrends_obj, term, t
     :param time_end: The end point of the period
     :return: A tuple consisting of the renormalised concatenated week-level dataframe and the background dataframe
     """
-    time_period_list = create_time_periods(time_start, time_end, leap_size=1, overlap_size=0)
+    time_period_list = create_time_periods(time_start, time_end, leap_size=leap_size, overlap_size=0)
     retrieved_dataframes = list()
 
     for time_period in time_period_list:
@@ -288,27 +288,28 @@ def renormalise_all_tags(dataframe_dict, renormalisation_dict):
         current_df = dataframe_dict[term]
         current_df[term] = current_df[term] * renormalisation_multiplier
 
-def retrieve_all_terms_start(pytrends_obj, target_terms_list, time_start, time_end):
+def retrieve_all_terms_start(pytrends_obj, target_terms_list, time_start, time_end, leap_size=5):
     dataframe_dict=dict()
     time_start = datetime.strptime(time_start, DT_FORMAT)
     time_end = datetime.strptime(time_end, DT_FORMAT)
     return retrieve_all_terms_continue(pytrends_obj, target_terms_list, time_start, time_end,
-                                       dataframe_dict, starting_index=0)
+                                       dataframe_dict, starting_index=0, leap_size=leap_size)
 
 def retrieve_all_terms_continue(pytrends_obj, target_terms_list, time_start, time_end,
-                                dataframe_dict, starting_index=0):
+                                dataframe_dict, starting_index=0, leap_size=5):
 
     for index in range(starting_index, len(target_terms_list)):
         term = target_terms_list[index]
         try:
             normalised_df, background_df = retrieve_time_series_with_overall_series_normalisation(pytrends_obj,
-                                                                              term, time_start, time_end)
+                                                                              term, time_start, time_end,
+                                                                              leap_size=leap_size)
             dataframe_dict[term] = normalised_df
         except Exception as e:
             print('An error occured! Details follow:')
             print(traceback.print_exc())
             print(e)
             with open(INDIVIDUAL_CONTINUE_FILENAME, 'wb') as f:
-                pickle.dump((target_terms_list, time_start, time_end, dataframe_dict, index), f)
+                pickle.dump((target_terms_list, time_start, time_end, dataframe_dict, index, leap_size), f)
             return None
     return dataframe_dict

@@ -20,6 +20,7 @@ def main():
     parser.add_argument('--sleep_time', type=int, default=1, help='Sleep time between subsequent queries, to '
                                                                   'avoid rate-limiting. If you\'re rate-limited, '
                                                                   'set this to 60 (unit is seconds).')
+    parser.add_argument('--leap_size', type=int, default=1)
     parser.add_argument('--output_dir', type=str, required=True, help='Output directory for the resulting pickle file.')
     args = parser.parse_args()
 
@@ -41,11 +42,12 @@ def main():
         terms_list = list(terms_dict.values())
         with open(os.path.join(args.output_dir, 'dataframe_settings.json'), 'w', encoding='utf8') as f:
             json.dump({'time_start': args.time_start, 'time_end': args.time_end}, f)
-        df_dict = retrieve_all_terms_start(pytrends_obj, terms_list, args.time_start, args.time_end)
+        df_dict = retrieve_all_terms_start(pytrends_obj, terms_list, args.time_start, args.time_end,
+                                           leap_size=args.leap_size)
     else:
         saved_state = pickle.load(open(args.state, 'rb'))
         df_dict = retrieve_all_terms_continue(pytrends_obj, saved_state[0], saved_state[1],
-                                      saved_state[2], saved_state[3], saved_state[4])
+                                      saved_state[2], saved_state[3], saved_state[4], leap_size=saved_state[5])
 
     if df_dict is not None:
         make_sure_path_exists(args.output_dir)
